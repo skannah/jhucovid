@@ -1,0 +1,30 @@
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset (make sure to update the file path to where you've saved the CSV)
+file_path = 'path_to_your_file/time_series_covid19_confirmed_global.csv'
+df = pd.read_csv(file_path)
+
+# Summing up the total confirmed cases globally over time
+global_cases = df.iloc[:, 4:].sum()
+
+# Convert the result to a DataFrame for easier plotting
+global_cases_df = pd.DataFrame(global_cases, columns=['Confirmed Cases'])
+
+# Convert the index to datetime format for better readability
+global_cases_df.index = pd.to_datetime(global_cases_df.index)
+
+# Display the global trend over time
+print(global_cases_df.head())
+
+# Plotting the global trend
+plt.figure(figsize=(12, 6))
+plt.plot(global_cases_df.index, global_cases_df['Confirmed Cases'], color='blue', label='Global Confirmed Cases')
+plt.title('Global Trend of Confirmed COVID-19 Cases Over Time', fontsize=16)
+plt.xlabel('Date', fontsize=12)
+plt.ylabel('Confirmed Cases', fontsize=12)
+plt.grid(True)
+plt.legend()
+plt.xticks(rotation=45)
+plt.show()
