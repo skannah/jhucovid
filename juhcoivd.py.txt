@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the dataset (make sure to update the file path to where you've saved the CSV)
-file_path = 'path_to_your_file/time_series_covid19_confirmed_global.csv'
+file_path = 'C:\\Users\\suren\\OneDrive\\Desktop\\Projects\\MSDS\\time_series_covid19_confirmed_global.csv' # Update this path
 df = pd.read_csv(file_path)
 
 # Summing up the total confirmed cases globally over time
@@ -27,4 +27,45 @@ plt.ylabel('Confirmed Cases', fontsize=12)
 plt.grid(True)
 plt.legend()
 plt.xticks(rotation=45)
+plt.show()
+
+# Additional Visualization: Confirmed Cases by Continent
+# First, we need to process the data to group by continent
+# Assume 'Country/Region' column is in the dataset and 'Continent' mapping exists
+
+# Create a mapping of countries to continents (this is a simplified example)
+continent_map = {
+    'Asia': ['China', 'India', 'Japan', 'South Korea', 'Indonesia', 'Pakistan'],
+    'Europe': ['Germany', 'France', 'Italy', 'Spain', 'UK'],
+    'North America': ['USA', 'Canada', 'Mexico'],
+    'South America': ['Brazil', 'Argentina', 'Chile'],
+    'Africa': ['Nigeria', 'South Africa', 'Kenya', 'Egypt'],
+    'Oceania': ['Australia', 'New Zealand']
+}
+
+# Add a continent column to the DataFrame
+def get_continent(country):
+    for continent, countries in continent_map.items():
+        if country in countries:
+            return continent
+    return 'Other'
+
+# Create a new column for continent
+df['Continent'] = df['Country/Region'].apply(get_continent)
+
+# Group by continent and sum the confirmed cases
+continent_cases = df.groupby('Continent').sum().iloc[:, 4:].sum(axis=1)
+
+# Convert to DataFrame for plotting
+continent_cases_df = continent_cases.reset_index()
+continent_cases_df.columns = ['Continent', 'Confirmed Cases']
+
+# Plotting the confirmed cases by continent
+plt.figure(figsize=(12, 6))
+plt.bar(continent_cases_df['Continent'], continent_cases_df['Confirmed Cases'], color='orange')
+plt.title('Total Confirmed COVID-19 Cases by Continent', fontsize=16)
+plt.xlabel('Continent', fontsize=12)
+plt.ylabel('Confirmed Cases', fontsize=12)
+plt.xticks(rotation=45)
+plt.grid(axis='y')
 plt.show()
